@@ -22,7 +22,6 @@ export const Dimensions = ({ query, datasource, onChange, onRunQuery }: Props) =
   const add = (name: string, value: string) => {
     query.dimensions.push({ name, value });
     onChange(query);
-    onRunQuery();
   }
   const remove = (index: number) => {
     query.dimensions.splice(index, 1);

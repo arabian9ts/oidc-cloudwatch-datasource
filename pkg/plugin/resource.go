@@ -82,16 +82,14 @@ func (ds *Datasource) listDimensions(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if len(metrics.Metrics) == 0 {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	dimensions := make([]Dimension, 0, len(metrics.Metrics[0].Dimensions))
-	for _, dimension := range metrics.Metrics[0].Dimensions {
-		dimensions = append(dimensions, Dimension{
-			Name:  *dimension.Name,
-			Value: *dimension.Value,
-		})
+	dimensions := make([]Dimension, 0, len(metrics.Metrics))
+	for _, metric := range metrics.Metrics {
+		for _, dimension := range metric.Dimensions {
+			dimensions = append(dimensions, Dimension{
+				Name:  *dimension.Name,
+				Value: *dimension.Value,
+			})
+		}
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

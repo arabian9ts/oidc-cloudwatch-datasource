@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Select } from '@grafana/ui';
-import { QueryEditorProps, SelectableValue } from '@grafana/data';
+import { QueryEditorProps, toOption } from '@grafana/data';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
 import { DataSource } from '../datasource';
 import { DataSourceOptions, Query, Namespace, MetricName } from '../types';
@@ -19,50 +19,18 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
   }, [datasource, setNamespaces]);
 
   useEffect(() => {
-    if (query.namespace === undefined || query.namespace === '') {
+    if (!query.namespace) {
       return;
     }
     datasource.listMeticNames(query.namespace).then(setMetricNames).catch(console.error);
   }, [datasource, setMetricNames, query.namespace]);
 
-
-  const onNamespaceChange = (value: string) => {
-    onChange({ ...query, namespace: value });
+  const onQueryChange = <Key extends keyof Query, Value extends Query[Key]>(
+    option: Key,
+    value: Value | undefined,
+  ) => {
+    onChange({ ...query, [option]: value });
     onRunQuery();
-  };
-
-  const onMetricNameChange = (value: string) => {
-    onChange({ ...query, metricName: value });
-    onRunQuery();
-  };
-
-  const onStatisticChange = (value: string) => {
-    onChange({ ...query, statistic: value });
-    onRunQuery();
-  };
-
-  const listNamespacesAsOptions = (): Array<SelectableValue<string>> => {
-    return [
-      ...namespaces.map((o) => {
-        return { value: o.name, label: o.name };
-      }),
-    ];
-  };
-
-  const listMetricNamesAsOptions = (): Array<SelectableValue<string>> => {
-    return [
-      ...metricNames.map((o) => {
-        return { value: o.name, label: o.name };
-      }),
-    ];
-  };
-
-  const statisticsAsOptions = (): Array<SelectableValue<string>> => {
-    return [
-      ...statistics.map((o) => {
-        return { value: o, label: o };
-      }),
-    ];
   };
 
   return (
@@ -72,20 +40,20 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
           <EditorFieldGroup>
             <EditorField label="Namespace" width={26}>
               <Select
-                options={listNamespacesAsOptions()}
+                options={namespaces.map((n) => toOption(n.name))}
                 value={query.namespace}
                 width={28}
-                onChange={(e) => onNamespaceChange(e?.value!)}
+                onChange={(e) => onQueryChange('namespace', e?.value!)}
                 className="inline-element"
                 isClearable={true}
               />
             </EditorField>
             <EditorField label="MetricName" width={16}>
               <Select
-                options={listMetricNamesAsOptions()}
+                options={metricNames.map((m) => toOption(m.name))}
                 value={query.metricName}
                 width={28}
-                onChange={(e) => onMetricNameChange(e?.value!)}
+                onChange={(e) => onQueryChange('metricName', e?.value!)}
                 className="inline-element"
                 isClearable={true}
               />
@@ -95,8 +63,8 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
               <Select
                 allowCustomValue
                 value={query.statistic}
-                options={statisticsAsOptions()}
-                onChange={(e) => onStatisticChange(e?.value!)}
+                options={statistics.map((s) => toOption(s))}
+                onChange={(e) => onQueryChange('statistic', e?.value!)}
               />
             </EditorField>
           </EditorFieldGroup>
