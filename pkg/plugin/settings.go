@@ -19,6 +19,18 @@ type DatasourceConfig struct {
 }
 
 func (sc *DatasourceConfig) Validate() error {
+	if sc.OIDCTokenIssuer == "" {
+		return errors.New("oidc token issuer is required")
+	}
+	if sc.AssumeRole == "" {
+		return errors.New("assume role is required")
+	}
+	if sc.STSRegion == "" {
+		return errors.New("sts region is required")
+	}
+	if sc.MonitoringRegion == "" {
+		return errors.New("monitoring region is required")
+	}
 	return nil
 }
 
