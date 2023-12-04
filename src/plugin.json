@@ -5,11 +5,12 @@
   "id": "arabian9ts-oidccloudwatch-datasource",
   "metrics": true,
   "backend": true,
+  "alerting": true,
   "executable": "gpx_oidc_cloudwatch_datasource",
   "info": {
-    "description": "CloudWatch datasource using oidc",
+    "description": "CloudWatch datasource uses oidc",
     "author": {
-      "name": "Arabian9ts"
+      "name": "arabian9ts"
     },
     "keywords": ["datasource"],
     "logos": {
@@ -17,7 +18,10 @@
       "large": "img/logo.svg"
     },
     "links": [],
-    "screenshots": [],
+    "screenshots": [
+      { "name": "DataSource Configuration", "path": "img/config.jpg" },
+      { "name": "DataSource Query Editor", "path": "img/query.jpg" }
+    ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
